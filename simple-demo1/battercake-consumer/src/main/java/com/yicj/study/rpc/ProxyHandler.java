@@ -16,7 +16,6 @@ public class ProxyHandler implements InvocationHandler {
 	private int port;
 
 	public ProxyHandler(String ip, int port) {
-		// TODO Auto-generated constructor stub
 		this.ip = ip;
 		this.port = port;
 	}
