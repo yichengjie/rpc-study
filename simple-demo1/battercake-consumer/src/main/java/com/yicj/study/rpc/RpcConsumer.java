@@ -8,6 +8,8 @@ import java.lang.reflect.Proxy;
  * @author yicj
  */
 public class RpcConsumer {
+	
+	@SuppressWarnings("unchecked")
 	public static <T> T getService(Class<T> clazz, String ip, int port) {
 		ProxyHandler proxyHandler = new ProxyHandler(ip, port);
 		return (T) Proxy.newProxyInstance(

@@ -8,7 +8,10 @@ import java.net.Socket;
 import java.util.List;
 
 /**
- * 1.读取客户端发送的服务名 2.判断服务是否发布 3. 如果发布，则走反射逻辑，动态调用，返回结果 4.如果未发布，则返回提示通知
+ * 1.读取客户端发送的服务名 
+ * 2.判断服务是否发布 
+ * 3. 如果发布，则走反射逻辑，动态调用，返回结果 
+ * 4.如果未发布，则返回提示通知
  */
 public class ServerThread implements Runnable {
 	private Socket client = null;

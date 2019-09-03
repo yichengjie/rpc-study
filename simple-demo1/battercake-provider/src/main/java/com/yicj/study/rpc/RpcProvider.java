@@ -10,8 +10,7 @@ public class RpcProvider {
 	// 存储注册的服务列表
 	private static List<Object> serviceList;
 	/**
-	 * 发布rpc服务
-	 * 
+	 * 1.发布rpc服务
 	 * @param object
 	 * @param port
 	 * @throws Exception
