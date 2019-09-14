@@ -1,7 +1,11 @@
 package com.yicj.study;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.yicj.study.common.MarshallingCodeCFactory;
 import com.yicj.study.handler.RpcReqServerHandler;
+import com.yicj.study.service.impl.BatterCakeServiceImpl;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -16,9 +20,12 @@ import io.netty.handler.logging.LoggingHandler;
 
 //https://www.cnblogs.com/wade-luffy/p/6169947.html
 //https://blog.csdn.net/u012734441/article/details/78769068
-public class SubReqServer {
+public class RpcReqServer {
+	private static List<Object> serviceList;
 	
-	public void bind(int port) throws InterruptedException {
+	public void bind(int port,Object... services) throws InterruptedException {
+		serviceList = Arrays.asList(services);
+		
 		//配置服务端的Nio线程组
 		EventLoopGroup group = new NioEventLoopGroup() ;
 		try {
@@ -34,7 +41,7 @@ public class SubReqServer {
 					ch.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder()) ;
 					//通过工厂类创建MarshallingEncoder解码器，并添加到ChannelPipeline中
 					ch.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingDecoder());
-					ch.pipeline().addLast(new RpcReqServerHandler()) ;
+					ch.pipeline().addLast(new RpcReqServerHandler(serviceList)) ;
 				}
 			}) ;
 			//绑定端口，同步等待成功
@@ -48,6 +55,6 @@ public class SubReqServer {
 	
 	public static void main(String[] args) throws InterruptedException {
 		int port = 8080 ;
-		new SubReqServer().bind(port); 
+		new RpcReqServer().bind(port,new BatterCakeServiceImpl()); 
 	}
 }

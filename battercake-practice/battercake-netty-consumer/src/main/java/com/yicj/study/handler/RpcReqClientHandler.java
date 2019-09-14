@@ -17,7 +17,6 @@ public class RpcReqClientHandler extends ChannelInboundHandlerAdapter{
 		String methodName = "sellBatterCake" ;
 		Class<?>[] methodParameterTypes = new Class [] {String.class} ;
 		Object[] methodParameters = new Object[] {"hello"} ;
-		
 		RpcRequestVo vo = new RpcRequestVo(interfaceName, methodName, methodParameterTypes, methodParameters) ;
 		ctx.writeAndFlush(vo) ;
 	}

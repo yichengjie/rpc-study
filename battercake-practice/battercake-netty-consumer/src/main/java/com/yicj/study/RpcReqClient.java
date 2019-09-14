@@ -12,7 +12,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-public class SubReqClient {
+public class RpcReqClient {
 
 	public void connect(String host,int port) throws InterruptedException {
 		EventLoopGroup group = new NioEventLoopGroup() ;
@@ -43,7 +43,7 @@ public class SubReqClient {
 	public static void main(String[] args) throws InterruptedException {
 		int port = 8080  ;
 		String host = "127.0.0.1" ;
-		new SubReqClient().connect(host, port);
+		new RpcReqClient().connect(host, port);
 	}
 	
 }

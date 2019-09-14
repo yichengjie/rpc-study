@@ -1,6 +1,9 @@
 package com.yicj.study.handler;
 
 
+import java.lang.reflect.Method;
+import java.util.List;
+
 import com.yicj.study.common.RpcRequestVo;
 import com.yicj.study.common.RpcResponseVo;
 
@@ -10,6 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RpcReqServerHandler extends ChannelInboundHandlerAdapter {
+	private List<Object> serviceList ;
+	
+	public RpcReqServerHandler(List<Object> serviceList) {
+		this.serviceList = serviceList ;
+	}
 	
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -25,11 +33,33 @@ public class RpcReqServerHandler extends ChannelInboundHandlerAdapter {
 		//}
 	}
 	
-	private RpcResponseVo resp(RpcRequestVo req) {
-		String code = "200" ;
-		String msg = "success" ;
-		String data = "hello world" ;
-		RpcResponseVo resp = new RpcResponseVo(code, msg, data) ;
+	private Object findService(Class<?> serviceClass) {
+		for (Object obj : serviceList) {
+			boolean isFather = serviceClass.isAssignableFrom(obj.getClass());
+			if (isFather) {
+				return obj;
+			}
+		}
+		return null;
+	}
+	
+	private RpcResponseVo resp(RpcRequestVo req) throws ClassNotFoundException {
+		String interfaceName = req.getInterfaceName();
+		String methodName = req.getMethodName() ;
+		Class<?> [] methodParameterTypes = req.getMethodParameterTypes();
+		Object[] methodParameters = req.getMethodParameters();
+		Class<?> serviceClass = Class.forName(interfaceName);
+		RpcResponseVo resp = new RpcResponseVo("404", interfaceName+"服务未发现", null) ;
+		Object service = findService(serviceClass);
+		if (service != null) {
+			try {
+				Method method = service.getClass().getMethod(methodName, methodParameterTypes);
+				Object result = method.invoke(service, methodParameters);
+				resp = new RpcResponseVo("200", "success", result) ;
+			} catch (Throwable t) {
+				resp = new RpcResponseVo("500", "执行方法报错", t) ;
+			}
+		} 
 		return resp ;
 	}
 	
