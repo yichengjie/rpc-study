@@ -1,6 +1,8 @@
 package com.yicj.study.handler;
 
 
+import com.yicj.study.common.RpcRequestVo;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
@@ -11,10 +13,13 @@ public class RpcReqClientHandler extends ChannelInboundHandlerAdapter{
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		//在链路激活的时候循环构造10条订购消息，最后一次性地发送给服务器端
-		for(int i = 0 ; i < 10 ; i++) {
-			//ctx.write(subReq(i)) ;
-		}
-		ctx.flush();
+		String interfaceName = "com.yicj.study.service.BatterCakeService" ;
+		String methodName = "sellBatterCake" ;
+		Class<?>[] methodParameterTypes = new Class [] {String.class} ;
+		Object[] methodParameters = new Object[] {"hello"} ;
+		
+		RpcRequestVo vo = new RpcRequestVo(interfaceName, methodName, methodParameterTypes, methodParameters) ;
+		ctx.writeAndFlush(vo) ;
 	}
 	
 	
