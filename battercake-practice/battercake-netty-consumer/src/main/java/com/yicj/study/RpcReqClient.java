@@ -32,8 +32,9 @@ public class RpcReqClient {
 			}); 
 			//发起异步连接操作
 			ChannelFuture f = boot.connect(host,port).sync();
+			Channel channel = f.channel();
 			//等待客户端链路关闭
-			f.channel().closeFuture().sync() ;
+			channel.closeFuture().sync() ;
 		} finally {
 			group.shutdownGracefully() ;
 		}
