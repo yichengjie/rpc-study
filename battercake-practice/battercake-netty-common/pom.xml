@@ -2,8 +2,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.yicj.study</groupId>
-    <artifactId>simple-demo1</artifactId>
+    <artifactId>battercake-practice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>battercake-consumer</artifactId>
+  <artifactId>battercake-netty-common</artifactId>
 </project>
