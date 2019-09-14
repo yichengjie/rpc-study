@@ -2,15 +2,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.yicj.study</groupId>
-    <artifactId>rpc-study</artifactId>
+    <artifactId>simple-demo1</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <packaging>pom</packaging>
-  <artifactId>simple-demo1</artifactId>
-  <modules>
-    <module>battercake-consumer</module>
-  	<module>battercake-provider</module>	
-	<module>battercake-consumer-netty</module>
-	<module>battercake-provider-netty</module>
-  </modules>
+  <artifactId>battercake-provider-netty</artifactId>
 </project>
