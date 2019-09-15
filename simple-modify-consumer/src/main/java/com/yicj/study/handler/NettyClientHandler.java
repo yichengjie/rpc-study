@@ -12,7 +12,7 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 
 
-@Sharable
+//@Sharable
 public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 

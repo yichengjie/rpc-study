@@ -10,7 +10,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 
-@ChannelHandler.Sharable
+//@ChannelHandler.Sharable
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
 	private final Logger logger = LoggerFactory.getLogger(NettyServerHandler.class);

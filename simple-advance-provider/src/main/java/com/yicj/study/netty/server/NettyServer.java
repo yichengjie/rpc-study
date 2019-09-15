@@ -28,7 +28,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 public class NettyServer implements ApplicationContextAware, InitializingBean {
 	private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
 	private static final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-	//private static final EventLoopGroup workerGroup = new NioEventLoopGroup(4);
+	private static final EventLoopGroup workerGroup = new NioEventLoopGroup(4);
 	private Map<String, Object> serviceMap = new HashMap<>();
 	@Value("${rpc.server.address}")
 	private String serverAddress;
@@ -64,9 +64,10 @@ public class NettyServer implements ApplicationContextAware, InitializingBean {
 		//new Thread(() -> {
 		try {
 			ServerBootstrap bootstrap = new ServerBootstrap();
-			bootstrap.group(bossGroup)
+			bootstrap.group(bossGroup,workerGroup)
 			.channel(NioServerSocketChannel.class)
-			.option(ChannelOption.SO_BACKLOG, 1024)
+			//.option(ChannelOption.SO_BACKLOG, 1024)
+			.option(ChannelOption.SO_BACKLOG, 2048)
 			.childOption(ChannelOption.SO_KEEPALIVE, true)
 			.childOption(ChannelOption.TCP_NODELAY, true)
 			.childHandler(new ChannelInitializer<SocketChannel>() {
@@ -92,7 +93,7 @@ public class NettyServer implements ApplicationContextAware, InitializingBean {
 		} catch (Exception e) {
 			e.printStackTrace();
 			bossGroup.shutdownGracefully();
-			//workerGroup.shutdownGracefully();
+			workerGroup.shutdownGracefully();
 		}
 		//}).start();
 	}

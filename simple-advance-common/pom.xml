@@ -49,4 +49,8 @@
 			<artifactId>byte-buddy</artifactId>
 		</dependency>
 	</dependencies>
+	
+	<build>
+		<finalName>simple-advance-common</finalName>
+	</build>
 </project>

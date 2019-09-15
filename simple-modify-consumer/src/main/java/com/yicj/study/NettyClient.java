@@ -1,6 +1,5 @@
 package com.yicj.study;
 
-import java.util.concurrent.TimeUnit;
 import com.yicj.study.handler.NettyClientHandler;
 import com.yicj.study.netty.codec.jboss.MarshallingCodeCFactory;
 import io.netty.bootstrap.Bootstrap;
@@ -17,26 +16,24 @@ import io.netty.handler.timeout.IdleStateHandler;
 public class NettyClient {
 	public void start(String host,int port) throws InterruptedException {
 		EventLoopGroup group = new NioEventLoopGroup();
-		Bootstrap bootstrap = new Bootstrap();
-		NettyClientHandler clientHandler = new NettyClientHandler();
 		try {
-			bootstrap.group(group)
+			Bootstrap boot = new Bootstrap();
+			boot.group(group)
 			.channel(NioSocketChannel.class)
 			.option(ChannelOption.TCP_NODELAY, true)
 			.option(ChannelOption.SO_KEEPALIVE, true)
 			.handler(new ChannelInitializer<SocketChannel>() {
-				// 创建NIOSocketChannel成功后，在进行初始化时，将它的ChannelHandler设置到ChannelPipeline中，用于处理网络IO事件
 				protected void initChannel(SocketChannel channel) throws Exception {
-					ChannelPipeline pipeline = channel.pipeline();
-					pipeline.addLast(new IdleStateHandler(0, 0, 5,TimeUnit.SECONDS));
+					ChannelPipeline p = channel.pipeline();
+					p.addLast(new IdleStateHandler(0, 0, 5));
 					//pipeline.addLast(new JSONEncoder());
 					//pipeline.addLast(new JSONDecoder());
-					pipeline.addLast(MarshallingCodeCFactory.buildMarshallingEncoder()) ;
-					pipeline.addLast(MarshallingCodeCFactory.buildMarshallingDecoder()) ;
-					pipeline.addLast(clientHandler);
+					p.addLast(MarshallingCodeCFactory.buildMarshallingEncoder()) ;
+					p.addLast(MarshallingCodeCFactory.buildMarshallingDecoder()) ;
+					p.addLast("handler",new NettyClientHandler());
 				}
 			});
-			ChannelFuture future = bootstrap.connect(host,port);
+			ChannelFuture future = boot.connect(host,port);
 			future.channel().closeFuture().sync() ;
 		} finally {
 			group.shutdownGracefully();

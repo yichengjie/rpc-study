@@ -65,18 +65,19 @@ public class NettyClient {
 		group.shutdownGracefully();
 	}
 
-	public Object send(Request request) throws InterruptedException {
-
+	public Response send(Request request) throws InterruptedException {
 		Channel channel = connectManage.chooseChannel();
 		if (channel != null && channel.isActive()) {
-			SynchronousQueue<Object> queue = clientHandler.sendRequest(request, channel);
-			Object result = queue.take();
-			return JSONArray.toJSONString(result);
+			SynchronousQueue<Response> queue = clientHandler.sendRequest(request, channel);
+			Response result = queue.take();
+			//return JSONArray.toJSONString(result);
+			return result ;
 		} else {
 			Response res = new Response();
 			res.setCode(1);
 			res.setErrorMsg("未正确连接到服务器.请检查相关配置信息!");
-			return JSONArray.toJSONString(res);
+			//return JSONArray.toJSONString(res);
+			return res ;
 		}
 	}
 

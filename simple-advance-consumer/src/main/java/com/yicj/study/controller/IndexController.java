@@ -31,8 +31,7 @@ public class IndexController {
 
     @RequestMapping("insert")
     @ResponseBody
-    public List<InfoUser> getUserList() throws InterruptedException {
-
+    public List<InfoUser> insert() throws InterruptedException {
         long start = System.currentTimeMillis();
         int thread_count = 100;
         CountDownLatch countDownLatch = new CountDownLatch(thread_count);

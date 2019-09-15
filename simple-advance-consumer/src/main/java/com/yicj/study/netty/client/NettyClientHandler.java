@@ -28,7 +28,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     @Autowired
     private ConnectManage connectManage;
 
-    private ConcurrentHashMap<String,SynchronousQueue<Object>> queueMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String,SynchronousQueue<Response>> queueMap = new ConcurrentHashMap<>();
 
     public void channelActive(ChannelHandlerContext ctx)   {
         logger.info("已连接到RPC服务器.{}",ctx.channel().remoteAddress());
@@ -44,11 +44,12 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         ctx.channel().close();
         connectManage.removeChannel(ctx.channel());
     }
+    
     public void channelRead(ChannelHandlerContext ctx, Object msg)throws Exception {
         //Response response = JSON.parseObject(msg.toString(),Response.class);
     	Response response = (Response) msg ;
         String requestId = response.getRequestId();
-        SynchronousQueue<Object> queue = queueMap.get(requestId);
+        SynchronousQueue<Response> queue = queueMap.get(requestId);
         queue.put(response);
         queueMap.remove(requestId);
     }
@@ -74,8 +75,8 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         }
     }
     
-    public SynchronousQueue<Object> sendRequest(Request request,Channel channel) {
-        SynchronousQueue<Object> queue = new SynchronousQueue<>();
+    public SynchronousQueue<Response> sendRequest(Request request,Channel channel) {
+        SynchronousQueue<Response> queue = new SynchronousQueue<>();
         queueMap.put(request.getId(), queue);
         channel.writeAndFlush(request);
         return queue;
