@@ -18,6 +18,9 @@
 		<module>simple-advance-common</module>
 		<module>simple-advance-provider</module>
 		<module>simple-advance-consumer</module>
+		<module>simple-modify-common</module>
+		<module>simple-modify-provider</module>
+		<module>simple-modify-consumer</module>
 	</modules>
 	
 	<dependencies>
