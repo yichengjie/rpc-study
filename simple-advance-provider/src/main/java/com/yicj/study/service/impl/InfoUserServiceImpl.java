@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.yicj.study.annotation.RpcService;
 import com.yicj.study.service.InfoUserService;
 import com.yicj.study.vo.InfoUser;
@@ -19,7 +17,7 @@ public class InfoUserServiceImpl implements InfoUserService {
     private Map<String,InfoUser> infoUserMap = new ConcurrentHashMap<>();
 
     public List<InfoUser> insertInfoUser(InfoUser infoUser) {
-        logger.info("新增用户信息:{}", JSONObject.toJSONString(infoUser));
+        logger.info("新增用户信息:{}", infoUser);
         infoUserMap.put(infoUser.getId(),infoUser);
         return getInfoUserList();
     }
@@ -37,12 +35,12 @@ public class InfoUserServiceImpl implements InfoUserService {
             Map.Entry<String, InfoUser> next = iterator.next();
             userList.add(next.getValue());
         }
-        logger.info("返回用户信息记录:{}", JSON.toJSONString(userList));
+        logger.info("返回用户信息记录:{}", userList);
         return userList;
     }
 
     public void deleteInfoUserById(String id) {
-        logger.info("删除用户信息:{}",JSONObject.toJSONString(infoUserMap.remove(id)));
+        logger.info("删除用户信息:{}",infoUserMap.remove(id));
     }
 
     public String getNameById(String id){
@@ -50,7 +48,7 @@ public class InfoUserServiceImpl implements InfoUserService {
         return infoUserMap.get(id).getName();
     }
     public Map<String,InfoUser> getAllUser(){
-        logger.info("查询所有用户信息{}",JSONObject.toJSONString(infoUserMap));
+        logger.info("查询所有用户信息{}",infoUserMap);
         return infoUserMap;
     }
 }

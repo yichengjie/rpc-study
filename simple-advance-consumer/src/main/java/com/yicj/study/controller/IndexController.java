@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.yicj.study.service.InfoUserService;
 import com.yicj.study.util.IdUtil;
 import com.yicj.study.vo.InfoUser;
@@ -39,7 +37,7 @@ public class IndexController {
             new Thread(() -> {
                 InfoUser infoUser = new InfoUser(IdUtil.getId(),"Jeen","BeiJing");
                 List<InfoUser> users = userService.insertInfoUser(infoUser);
-                logger.info("返回用户信息记录:{}", JSON.toJSONString(users));
+                logger.info("返回用户信息记录:{}", users);
                 countDownLatch.countDown();
             }).start();
         }
@@ -73,7 +71,7 @@ public class IndexController {
         for (int i=0;i<thread_count;i++){
             new Thread(() -> {
                 Map<String, InfoUser> allUser = userService.getAllUser();
-                logger.info("查询所有用户信息：{}",JSONObject.toJSONString(allUser));
+                logger.info("查询所有用户信息：{}",allUser);
                 countDownLatch.countDown();
             }).start();
         }

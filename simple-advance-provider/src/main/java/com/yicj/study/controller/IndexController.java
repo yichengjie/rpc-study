@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.alibaba.fastjson.JSONObject;
 import com.yicj.study.vo.InfoUser;
 
 @Controller
@@ -16,10 +15,9 @@ public class IndexController {
 
     @RequestMapping("index")
     @ResponseBody
-    public String index(){
+    public InfoUser index(){
         InfoUser user = new InfoUser(UUID.randomUUID().toString(),"王思萌","BeiJing");
-        String json = JSONObject.toJSONString(user);
-        logger.info(json);
-        return json;
+        logger.info(user.toString());
+        return user;
     }
 }
