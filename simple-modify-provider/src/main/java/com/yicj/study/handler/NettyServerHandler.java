@@ -1,15 +1,9 @@
-package com.yicj.study.netty.server;
-
-import java.lang.reflect.Method;
-import java.util.Map;
+package com.yicj.study.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSON;
 import com.yicj.study.vo.Request;
 import com.yicj.study.vo.Response;
-
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -20,11 +14,6 @@ import io.netty.handler.timeout.IdleStateEvent;
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
 	private final Logger logger = LoggerFactory.getLogger(NettyServerHandler.class);
-	private final Map<String, Object> serviceMap;
-
-	public NettyServerHandler(Map<String, Object> serviceMap) {
-		this.serviceMap = serviceMap;
-	}
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) {
@@ -39,7 +28,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		// Request request = JSON.parseObject(msg.toString(),Request.class);
 		Request request = (Request) msg;
 		if ("heartBeat".equals(request.getMethodName())) {
 			logger.info("客户端心跳信息..." + ctx.channel().remoteAddress());
@@ -48,10 +36,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 			Response response = new Response();
 			response.setRequestId(request.getId());
 			try {
-				Object result = this.handler(request);
-				response.setData(result);
+				response.setData("hello world");
 			} catch (Throwable e) {
-				e.printStackTrace();
 				response.setCode(1);
 				response.setErrorMsg(e.toString());
 				logger.error("RPC Server handle request error", e);
@@ -78,50 +64,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 		logger.info(cause.getMessage());
 		ctx.close();
-	}
-
-	/**
-	 * 通过反射，执行本地方法
-	 * 
-	 * @param request
-	 * @return
-	 * @throws Throwable
-	 */
-	private Object handler(Request request) throws Throwable {
-		String className = request.getClassName();
-		Object serviceBean = serviceMap.get(className);
-
-		if (serviceBean != null) {
-			Class<?> serviceClass = serviceBean.getClass();
-			String methodName = request.getMethodName();
-			Class<?>[] parameterTypes = request.getParameterTypes();
-			Object[] parameters = request.getParameters();
-
-			Method method = serviceClass.getMethod(methodName, parameterTypes);
-			method.setAccessible(true);
-			return method.invoke(serviceBean, getParameters(parameterTypes, parameters));
-		} else {
-			throw new Exception("未找到服务接口,请检查配置!:" + className + "#" + request.getMethodName());
-		}
-	}
-
-	/**
-	 * 获取参数列表
-	 * 
-	 * @param parameterTypes
-	 * @param parameters
-	 * @return
-	 */
-	private Object[] getParameters(Class<?>[] parameterTypes, Object[] parameters) {
-		if (parameters == null || parameters.length == 0) {
-			return parameters;
-		} else {
-			Object[] new_parameters = new Object[parameters.length];
-			for (int i = 0; i < parameters.length; i++) {
-				new_parameters[i] = JSON.parseObject(parameters[i].toString(), parameterTypes[i]);
-			}
-			return new_parameters;
-		}
 	}
 
 }
