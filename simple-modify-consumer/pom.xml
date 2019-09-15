@@ -12,7 +12,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.yicj.study</groupId>
-			<artifactId>simple-advance-common</artifactId>
+			<artifactId>simple-modify-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
