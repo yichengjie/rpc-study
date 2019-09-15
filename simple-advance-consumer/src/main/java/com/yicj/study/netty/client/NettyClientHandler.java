@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.yicj.study.connection.ConnectManage;
+import com.yicj.study.util.IdUtil;
 import com.yicj.study.vo.Request;
 import com.yicj.study.vo.Response;
 import io.netty.channel.Channel;
@@ -31,6 +32,10 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     public void channelActive(ChannelHandlerContext ctx)   {
         logger.info("已连接到RPC服务器.{}",ctx.channel().remoteAddress());
+        Request req = new Request() ;
+        req.setId(IdUtil.getId());
+        req.setMethodName("heartBeat"); 
+        ctx.channel().writeAndFlush(req) ;
     }
 
     public void channelInactive(ChannelHandlerContext ctx)   {
@@ -40,7 +45,8 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         connectManage.removeChannel(ctx.channel());
     }
     public void channelRead(ChannelHandlerContext ctx, Object msg)throws Exception {
-        Response response = JSON.parseObject(msg.toString(),Response.class);
+        //Response response = JSON.parseObject(msg.toString(),Response.class);
+    	Response response = (Response) msg ;
         String requestId = response.getRequestId();
         SynchronousQueue<Object> queue = queueMap.get(requestId);
         queue.put(response);
@@ -58,6 +64,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt)throws Exception {
         logger.info("已超过30秒未与RPC服务器进行读写操作!将发送心跳消息...");
         if (evt instanceof IdleStateEvent){
+        	logger.info("准备发送心跳数据.....");
             IdleStateEvent event = (IdleStateEvent)evt;
             if (event.state()== IdleState.ALL_IDLE){
                 Request request = new Request();
@@ -65,6 +72,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
                 ctx.channel().writeAndFlush(request);
             }
         }else{
+        	logger.info("应用数据发送....");
             super.userEventTriggered(ctx,evt);
         }
     }

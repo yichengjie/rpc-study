@@ -36,8 +36,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     public void channelRead(ChannelHandlerContext ctx, Object msg)   {
-        Request request = JSON.parseObject(msg.toString(),Request.class);
-
+        //Request request = JSON.parseObject(msg.toString(),Request.class);
+    	Request request = (Request)msg ;
         if ("heartBeat".equals(request.getMethodName())) {
             logger.info("客户端心跳信息..."+ctx.channel().remoteAddress());
         }else{
@@ -107,6 +107,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 ctx.channel().close();
             }
         }else{
+        	logger.info("其他事件....");
             super.userEventTriggered(ctx,evt);
         }
     }

@@ -2,6 +2,7 @@ package com.yicj.study.netty.client;
 
 import java.net.SocketAddress;
 import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONArray;
 import com.yicj.study.connection.ConnectManage;
+import com.yicj.study.netty.codec.jboss.MarshallingCodeCFactory;
 import com.yicj.study.netty.codec.json.JSONDecoder;
 import com.yicj.study.netty.codec.json.JSONEncoder;
 import com.yicj.study.vo.Request;
@@ -47,9 +49,11 @@ public class NettyClient {
 			// 创建NIOSocketChannel成功后，在进行初始化时，将它的ChannelHandler设置到ChannelPipeline中，用于处理网络IO事件
 			protected void initChannel(SocketChannel channel) throws Exception {
 				ChannelPipeline pipeline = channel.pipeline();
-				pipeline.addLast(new IdleStateHandler(0, 0, 30));
-				pipeline.addLast(new JSONEncoder());
-				pipeline.addLast(new JSONDecoder());
+				pipeline.addLast(new IdleStateHandler(0, 0, 30,TimeUnit.SECONDS));
+				//pipeline.addLast(new JSONEncoder());
+				//pipeline.addLast(new JSONDecoder());
+				pipeline.addLast(MarshallingCodeCFactory.buildMarshallingEncoder()) ;
+				pipeline.addLast(MarshallingCodeCFactory.buildMarshallingDecoder()) ;
 				pipeline.addLast("handler", clientHandler);
 			}
 		});

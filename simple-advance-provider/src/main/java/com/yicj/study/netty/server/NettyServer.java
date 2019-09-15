@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import com.yicj.study.annotation.RpcService;
+import com.yicj.study.netty.codec.jboss.MarshallingCodeCFactory;
 import com.yicj.study.netty.codec.json.JSONDecoder;
 import com.yicj.study.netty.codec.json.JSONEncoder;
 import com.yicj.study.registry.ServiceRegistry;
@@ -29,7 +30,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 public class NettyServer implements ApplicationContextAware, InitializingBean {
 	private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
 	private static final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-	private static final EventLoopGroup workerGroup = new NioEventLoopGroup(4);
+	//private static final EventLoopGroup workerGroup = new NioEventLoopGroup(4);
 	private Map<String, Object> serviceMap = new HashMap<>();
 	@Value("${rpc.server.address}")
 	private String serverAddress;
@@ -62,38 +63,40 @@ public class NettyServer implements ApplicationContextAware, InitializingBean {
 
 	public void start() {
 		final NettyServerHandler handler = new NettyServerHandler(serviceMap);
-
-		new Thread(() -> {
-			try {
-				ServerBootstrap bootstrap = new ServerBootstrap();
-				bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
-						.option(ChannelOption.SO_BACKLOG, 1024).childOption(ChannelOption.SO_KEEPALIVE, true)
-						.childOption(ChannelOption.TCP_NODELAY, true)
-						.childHandler(new ChannelInitializer<SocketChannel>() {
-							// 创建NIOSocketChannel成功后，在进行初始化时，将它的ChannelHandler设置到ChannelPipeline中，用于处理网络IO事件
-							protected void initChannel(SocketChannel channel) throws Exception {
-								ChannelPipeline pipeline = channel.pipeline();
-								pipeline.addLast(new IdleStateHandler(0, 0, 60));
-								pipeline.addLast(new JSONEncoder());
-								pipeline.addLast(new JSONDecoder());
-								pipeline.addLast(handler);
-							}
-						});
-
-				String[] array = serverAddress.split(":");
-				String host = array[0];
-				int port = Integer.parseInt(array[1]);
-				ChannelFuture cf = bootstrap.bind(host, port).sync();
-				logger.info("RPC 服务器启动.监听端口:" + port);
-				registry.register(serverAddress);
-				// 等待服务端监听端口关闭
-				cf.channel().closeFuture().sync();
-			} catch (Exception e) {
-				e.printStackTrace();
-				bossGroup.shutdownGracefully();
-				workerGroup.shutdownGracefully();
-			}
-		}).start();
+		//new Thread(() -> {
+		try {
+			ServerBootstrap bootstrap = new ServerBootstrap();
+			bootstrap.group(bossGroup)
+			.channel(NioServerSocketChannel.class)
+			.option(ChannelOption.SO_BACKLOG, 1024)
+			.childOption(ChannelOption.SO_KEEPALIVE, true)
+			.childOption(ChannelOption.TCP_NODELAY, true)
+			.childHandler(new ChannelInitializer<SocketChannel>() {
+				// 创建NIOSocketChannel成功后，在进行初始化时，将它的ChannelHandler设置到ChannelPipeline中，用于处理网络IO事件
+				protected void initChannel(SocketChannel channel) throws Exception {
+					ChannelPipeline pipeline = channel.pipeline();
+					pipeline.addLast(new IdleStateHandler(0, 0, 60));
+//					pipeline.addLast(new JSONEncoder());
+//					pipeline.addLast(new JSONDecoder());
+					pipeline.addLast(MarshallingCodeCFactory.buildMarshallingEncoder()) ;
+					pipeline.addLast(MarshallingCodeCFactory.buildMarshallingDecoder()) ;
+					pipeline.addLast(handler);
+				}
+			});
+			String[] array = serverAddress.split(":");
+			String host = array[0];
+			int port = Integer.parseInt(array[1]);
+			ChannelFuture cf = bootstrap.bind(host, port).sync();
+			logger.info("RPC 服务器启动.监听端口:" + port);
+			registry.register(serverAddress);
+			// 等待服务端监听端口关闭
+			cf.channel().closeFuture().sync();
+		} catch (Exception e) {
+			e.printStackTrace();
+			bossGroup.shutdownGracefully();
+			//workerGroup.shutdownGracefully();
+		}
+		//}).start();
 	}
 
 }
