@@ -4,21 +4,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yicj.study.service.InfoUserService;
 import com.yicj.study.util.IdUtil;
 import com.yicj.study.vo.InfoUser;
-
-import lombok.extern.slf4j.Slf4j;
 //https://www.jianshu.com/p/c5ecd4de6fd1
 @Controller
 public class IndexController {

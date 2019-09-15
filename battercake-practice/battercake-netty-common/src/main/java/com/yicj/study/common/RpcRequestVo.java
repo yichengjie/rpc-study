@@ -11,6 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class RpcRequestVo implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private String reqId ;//请求id
 	private String interfaceName ;
 	private String methodName ;
 	private Class<?>[] methodParameterTypes ;

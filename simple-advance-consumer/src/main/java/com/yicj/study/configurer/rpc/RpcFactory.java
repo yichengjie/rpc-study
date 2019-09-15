@@ -22,7 +22,7 @@ import com.yicj.study.vo.Response;
 public class RpcFactory<T> implements InvocationHandler {
 
     @Autowired
-    NettyClient client;
+    private NettyClient client;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 

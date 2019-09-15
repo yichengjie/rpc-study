@@ -39,17 +39,20 @@ public class NettyClient {
 	private ConnectManage connectManage;
 
 	public NettyClient() {
-		bootstrap.group(group).channel(NioSocketChannel.class).option(ChannelOption.TCP_NODELAY, true)
-				.option(ChannelOption.SO_KEEPALIVE, true).handler(new ChannelInitializer<SocketChannel>() {
-					// 创建NIOSocketChannel成功后，在进行初始化时，将它的ChannelHandler设置到ChannelPipeline中，用于处理网络IO事件
-					protected void initChannel(SocketChannel channel) throws Exception {
-						ChannelPipeline pipeline = channel.pipeline();
-						pipeline.addLast(new IdleStateHandler(0, 0, 30));
-						pipeline.addLast(new JSONEncoder());
-						pipeline.addLast(new JSONDecoder());
-						pipeline.addLast("handler", clientHandler);
-					}
-				});
+		bootstrap.group(group)
+		.channel(NioSocketChannel.class)
+		.option(ChannelOption.TCP_NODELAY, true)
+		.option(ChannelOption.SO_KEEPALIVE, true)
+		.handler(new ChannelInitializer<SocketChannel>() {
+			// 创建NIOSocketChannel成功后，在进行初始化时，将它的ChannelHandler设置到ChannelPipeline中，用于处理网络IO事件
+			protected void initChannel(SocketChannel channel) throws Exception {
+				ChannelPipeline pipeline = channel.pipeline();
+				pipeline.addLast(new IdleStateHandler(0, 0, 30));
+				pipeline.addLast(new JSONEncoder());
+				pipeline.addLast(new JSONDecoder());
+				pipeline.addLast("handler", clientHandler);
+			}
+		});
 	}
 
 	@PreDestroy

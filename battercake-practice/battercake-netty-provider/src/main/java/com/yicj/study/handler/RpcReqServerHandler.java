@@ -49,15 +49,15 @@ public class RpcReqServerHandler extends ChannelInboundHandlerAdapter {
 		Class<?> [] methodParameterTypes = req.getMethodParameterTypes();
 		Object[] methodParameters = req.getMethodParameters();
 		Class<?> serviceClass = Class.forName(interfaceName);
-		RpcResponseVo resp = new RpcResponseVo("404", interfaceName+"服务未发现", null) ;
+		RpcResponseVo resp = new RpcResponseVo(req.getReqId(),"404", interfaceName+"服务未发现", null) ;
 		Object service = findService(serviceClass);
 		if (service != null) {
 			try {
 				Method method = service.getClass().getMethod(methodName, methodParameterTypes);
 				Object result = method.invoke(service, methodParameters);
-				resp = new RpcResponseVo("200", "success", result) ;
+				resp = new RpcResponseVo(req.getReqId(),"200", "success", result) ;
 			} catch (Throwable t) {
-				resp = new RpcResponseVo("500", "执行方法报错", t) ;
+				resp = new RpcResponseVo(req.getReqId(),"500", "执行方法报错", t) ;
 			}
 		} 
 		return resp ;
