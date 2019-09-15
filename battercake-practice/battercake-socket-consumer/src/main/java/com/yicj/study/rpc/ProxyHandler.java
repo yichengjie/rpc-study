@@ -19,7 +19,7 @@ public class ProxyHandler implements InvocationHandler {
 		this.ip = ip;
 		this.port = port;
 	}
-
+	
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		Socket socket = new Socket(this.ip, this.port);

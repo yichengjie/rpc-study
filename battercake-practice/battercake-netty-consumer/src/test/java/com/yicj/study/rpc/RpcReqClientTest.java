@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import com.yicj.study.common.RpcRequestVo;
 import com.yicj.study.common.RpcResponseVo;
+import com.yicj.study.handler.ProxyHandler;
+import com.yicj.study.service.BatterCakeService;
 import com.yicj.study.util.IdUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,4 +34,13 @@ public class RpcReqClientTest {
 		RpcResponseVo resp = rpcReqClient.sendRequest(vo);
 		log.info("=======> " +resp.toString());
 	}
+	
+	@Test
+	public void testCallRemoteMethod2() throws IOException, InterruptedException {
+		ProxyHandler proxyHandler = new ProxyHandler(rpcReqClient) ;
+		BatterCakeService service = proxyHandler.getService(BatterCakeService.class);
+		String retInfo = service.sellBatterCake("张三");
+		log.info("=======> " +retInfo);
+	}
+
 }
