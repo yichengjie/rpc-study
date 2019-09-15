@@ -3,7 +3,6 @@ package com.yicj.study;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.concurrent.TimeUnit;
-import org.springframework.stereotype.Component;
 import com.yicj.study.handler.NettyClientHandler;
 import com.yicj.study.netty.codec.jboss.MarshallingCodeCFactory;
 import io.netty.bootstrap.Bootstrap;
@@ -17,7 +16,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 
-@Component
 public class NettyClient {
 	public void start(SocketAddress address) throws InterruptedException {
 		EventLoopGroup group = new NioEventLoopGroup();
@@ -36,7 +34,7 @@ public class NettyClient {
 				//pipeline.addLast(new JSONDecoder());
 				pipeline.addLast(MarshallingCodeCFactory.buildMarshallingEncoder()) ;
 				pipeline.addLast(MarshallingCodeCFactory.buildMarshallingDecoder()) ;
-				pipeline.addLast("handler", clientHandler);
+				pipeline.addLast(clientHandler);
 			}
 		});
 		ChannelFuture future = bootstrap.connect(address);

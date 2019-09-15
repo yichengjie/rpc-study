@@ -1,32 +1,20 @@
 package com.yicj.study.handler;
 
-import java.net.InetSocketAddress;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.SynchronousQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import com.yicj.study.util.IdUtil;
 import com.yicj.study.vo.Request;
 import com.yicj.study.vo.Response;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 
-@Component
-@ChannelHandler.Sharable
+
+@Sharable
 public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-//    @Autowired
-//    private NettyClient client;
-    @Autowired
-    //private ConnectManage connectManage;
-
-    private ConcurrentHashMap<String,SynchronousQueue<Object>> queueMap = new ConcurrentHashMap<>();
 
     public void channelActive(ChannelHandlerContext ctx)   {
         logger.info("已连接到RPC服务器.{}",ctx.channel().remoteAddress());
@@ -36,19 +24,9 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         ctx.channel().writeAndFlush(req) ;
     }
 
-    public void channelInactive(ChannelHandlerContext ctx)   {
-        InetSocketAddress address =(InetSocketAddress) ctx.channel().remoteAddress();
-        logger.info("与RPC服务器断开连接."+address);
-        ctx.channel().close();
-        //removeChannel(ctx.channel());
-    }
     public void channelRead(ChannelHandlerContext ctx, Object msg)throws Exception {
-        //Response response = JSON.parseObject(msg.toString(),Response.class);
-    	Response response = (Response) msg ;
-        String requestId = response.getRequestId();
-        SynchronousQueue<Object> queue = queueMap.get(requestId);
-        queue.put(response);
-        queueMap.remove(requestId);
+    	Response resp = (Response) msg ;
+        logger.info("client recive from server : " + resp.toString());
     }
     
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause){
@@ -71,13 +49,5 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
             super.userEventTriggered(ctx,evt);
         }
     }
-    
-    public SynchronousQueue<Object> sendRequest(Request request,Channel channel) {
-        SynchronousQueue<Object> queue = new SynchronousQueue<>();
-        queueMap.put(request.getId(), queue);
-        channel.writeAndFlush(request);
-        return queue;
-    }
-
     
 }
