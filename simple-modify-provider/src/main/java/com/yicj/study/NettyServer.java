@@ -20,12 +20,10 @@ public class NettyServer {
 	
 	//private static final EventLoopGroup workerGroup = new NioEventLoopGroup(4);
 	public void init() throws Exception {
-		String host = "127.0.0.1" ;
-		//int port = 18868 ; 
 		int port = 8080 ; 
-		start(host,port);
+		start(port);
 	}
-	public void start(String host ,int port) {
+	public void start(int port) {
 	    NettyServerHandler handler = new NettyServerHandler();
 		EventLoopGroup group = new NioEventLoopGroup();
 		try {
@@ -47,7 +45,7 @@ public class NettyServer {
 					pipeline.addLast(handler);
 				}
 			});
-			ChannelFuture cf = bootstrap.bind(host, port).sync();
+			ChannelFuture cf = bootstrap.bind(port).sync();
 			logger.info("RPC 服务器启动.监听端口:" + port);
 			// 等待服务端监听端口关闭
 			cf.channel().closeFuture().sync();
