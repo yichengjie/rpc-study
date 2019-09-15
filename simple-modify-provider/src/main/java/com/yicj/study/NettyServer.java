@@ -17,19 +17,20 @@ import io.netty.handler.timeout.IdleStateHandler;
 
 public class NettyServer {
 	private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
-	private static final EventLoopGroup bossGroup = new NioEventLoopGroup();
+	
 	//private static final EventLoopGroup workerGroup = new NioEventLoopGroup(4);
 	public void init() throws Exception {
 		String host = "127.0.0.1" ;
-		int port = 18868 ; 
+		//int port = 18868 ; 
+		int port = 8080 ; 
 		start(host,port);
 	}
 	public void start(String host ,int port) {
-		final NettyServerHandler handler = new NettyServerHandler();
-		//new Thread(() -> {
+	    NettyServerHandler handler = new NettyServerHandler();
+		EventLoopGroup group = new NioEventLoopGroup();
 		try {
 			ServerBootstrap bootstrap = new ServerBootstrap();
-			bootstrap.group(bossGroup)
+			bootstrap.group(group)
 			.channel(NioServerSocketChannel.class)
 			.option(ChannelOption.SO_BACKLOG, 1024)
 			.childOption(ChannelOption.SO_KEEPALIVE, true)
@@ -39,8 +40,8 @@ public class NettyServer {
 				protected void initChannel(SocketChannel channel) throws Exception {
 					ChannelPipeline pipeline = channel.pipeline();
 					pipeline.addLast(new IdleStateHandler(0, 0, 60));
-//					pipeline.addLast(new JSONEncoder());
-//					pipeline.addLast(new JSONDecoder());
+					//pipeline.addLast(new JSONEncoder());
+					//pipeline.addLast(new JSONDecoder());
 					pipeline.addLast(MarshallingCodeCFactory.buildMarshallingEncoder()) ;
 					pipeline.addLast(MarshallingCodeCFactory.buildMarshallingDecoder()) ;
 					pipeline.addLast(handler);
@@ -52,10 +53,8 @@ public class NettyServer {
 			cf.channel().closeFuture().sync();
 		} catch (Exception e) {
 			e.printStackTrace();
-			bossGroup.shutdownGracefully();
-			//workerGroup.shutdownGracefully();
+			group.shutdownGracefully();
 		}
-		//}).start();
 	}
 	
 	public static void main(String[] args) throws Exception {
