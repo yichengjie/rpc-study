@@ -52,14 +52,11 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         queue.put(response);
         queueMap.remove(requestId);
     }
-
-    public SynchronousQueue<Object> sendRequest(Request request,Channel channel) {
-        SynchronousQueue<Object> queue = new SynchronousQueue<>();
-        queueMap.put(request.getId(), queue);
-        channel.writeAndFlush(request);
-        return queue;
+    
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause){
+        logger.info("RPC通信服务器发生异常.{}",cause);
+        ctx.channel().close();
     }
-
 
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt)throws Exception {
         logger.info("已超过30秒未与RPC服务器进行读写操作!将发送心跳消息...");
@@ -76,9 +73,13 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
             super.userEventTriggered(ctx,evt);
         }
     }
-
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause){
-        logger.info("RPC通信服务器发生异常.{}",cause);
-        ctx.channel().close();
+    
+    public SynchronousQueue<Object> sendRequest(Request request,Channel channel) {
+        SynchronousQueue<Object> queue = new SynchronousQueue<>();
+        queueMap.put(request.getId(), queue);
+        channel.writeAndFlush(request);
+        return queue;
     }
+
+    
 }
