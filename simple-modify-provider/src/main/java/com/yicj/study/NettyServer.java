@@ -3,7 +3,8 @@ package com.yicj.study;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.yicj.study.handler.NettyServerHandler;
-import com.yicj.study.netty.codec.jboss.MarshallingCodeCFactory;
+import com.yicj.study.netty.codec.MarshallingCodeCFactory;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;

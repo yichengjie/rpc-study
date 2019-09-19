@@ -1,7 +1,8 @@
 package com.yicj.study;
 
 import com.yicj.study.handler.NettyClientHandler;
-import com.yicj.study.netty.codec.jboss.MarshallingCodeCFactory;
+import com.yicj.study.netty.codec.MarshallingCodeCFactory;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;

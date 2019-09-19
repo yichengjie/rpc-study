@@ -1,4 +1,4 @@
-package com.yicj.study.netty.codec.jboss;
+package com.yicj.study.netty.codec;
 import io.netty.handler.codec.marshalling.*;
 import org.jboss.marshalling.MarshallerFactory;
 import org.jboss.marshalling.Marshalling;
