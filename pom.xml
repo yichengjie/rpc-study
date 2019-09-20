@@ -21,6 +21,7 @@
 		<module>simple-modify-common</module>
 		<module>simple-modify-provider</module>
 		<module>simple-modify-consumer</module>
+		<module>api-practice</module>
 	</modules>
 	
 	<dependencies>

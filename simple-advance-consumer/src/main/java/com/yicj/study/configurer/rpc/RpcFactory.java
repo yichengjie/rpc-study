@@ -19,8 +19,12 @@ public class RpcFactory<T> implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Request request = new Request();
+        String methodName = method.getName() ;
         request.setClassName(method.getDeclaringClass().getName());
-        request.setMethodName(method.getName());
+        if(method.getName().endsWith("Async")) {
+        	methodName = methodName.substring(0, methodName.length() -5) ;
+        }
+        request.setMethodName(methodName);
         request.setParameters(args);
         request.setParameterTypes(method.getParameterTypes());
         request.setId(IdUtil.getId());

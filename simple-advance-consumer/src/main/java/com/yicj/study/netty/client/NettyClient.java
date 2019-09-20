@@ -1,6 +1,9 @@
 package com.yicj.study.netty.client;
 
 import java.net.SocketAddress;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -47,8 +50,6 @@ public class NettyClient {
 			protected void initChannel(SocketChannel channel) throws Exception {
 				ChannelPipeline pipeline = channel.pipeline();
 				pipeline.addLast(new IdleStateHandler(0, 0, 30,TimeUnit.SECONDS));
-				//pipeline.addLast(new JSONEncoder());
-				//pipeline.addLast(new JSONDecoder());
 				pipeline.addLast(MarshallingCodeCFactory.buildMarshallingEncoder()) ;
 				pipeline.addLast(MarshallingCodeCFactory.buildMarshallingDecoder()) ;
 				pipeline.addLast("handler", clientHandler);
@@ -75,6 +76,34 @@ public class NettyClient {
 			res.setErrorMsg("未正确连接到服务器.请检查相关配置信息!");
 			//return JSONArray.toJSONString(res);
 			return res ;
+		}
+	}
+	
+	
+	public Future<Response> sendAsync(Request request) throws InterruptedException {
+		Future<Response> future = null ; 
+		Channel channel = connectManage.chooseChannel();
+		if (channel != null && channel.isActive()) {
+			SynchronousQueue<Response> queue = clientHandler.sendRequest(request, channel);
+			future = new FutureTask<Response>(new Callable<Response>() {
+				@Override
+				public Response call() throws Exception {
+					Response result = queue.take();
+					return result;
+				}
+			}) ;
+			return future ;
+		} else {
+			future = new FutureTask<Response>(new Callable<Response>() {
+				@Override
+				public Response call() throws Exception {
+					Response res = new Response();
+					res.setCode(1);
+					res.setErrorMsg("未正确连接到服务器.请检查相关配置信息!");
+					return res;
+				}
+			}) ;
+			return future ;
 		}
 	}
 
