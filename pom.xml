@@ -22,6 +22,8 @@
 		<module>simple-modify-provider</module>
 		<module>simple-modify-consumer</module>
 		<module>api-practice</module>
+		<module>simple-rpc-stage1</module>
+		<module>simple-rpc-stage2</module>
 	</modules>
 	
 	<dependencies>
