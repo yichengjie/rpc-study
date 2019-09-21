@@ -43,7 +43,7 @@ public class NettyClient {
 	
 	public static void main(String[] args) throws InterruptedException {
 		String host = "127.0.0.1" ;
-		int port = 8080 ;
+		int port = 18868 ;
 		NettyClient client = new NettyClient() ;
 		client.start(host, port);
 	}

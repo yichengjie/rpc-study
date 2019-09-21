@@ -1,5 +1,6 @@
 package com.yicj.study.handler;
 
+import com.yicj.study.rpc.NettyServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.yicj.study.vo.Request;
@@ -9,11 +10,24 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-//@ChannelHandler.Sharable
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
+@ChannelHandler.Sharable
+@Component
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
-
 	private final Logger logger = LoggerFactory.getLogger(NettyServerHandler.class);
+	private Map<String, Object> serviceMap = new HashMap<>();
+
+
+	public NettyServerHandler(Map<String, Object> serviceMap){
+		this.serviceMap = serviceMap ;
+	}
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) {
@@ -32,18 +46,48 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 		if ("heartBeat".equals(request.getMethodName())) {
 			logger.info("客户端心跳信息..." + ctx.channel().remoteAddress());
 		} else {
+			String className = request.getClassName() ;
 			logger.info("RPC客户端请求接口:" + request.getClassName() + "   方法名:" + request.getMethodName());
-			Response response = new Response();
-			response.setRequestId(request.getId());
-			try {
-				response.setData("hello world");
-			} catch (Throwable e) {
-				response.setCode(1);
-				response.setErrorMsg(e.toString());
-				logger.error("RPC Server handle request error", e);
+			Object service = this.serviceMap.get(className);
+			if(service != null){
+				Response response = this.doExecuteMethod(request, service);
+				ctx.writeAndFlush(response);
+			}else{
+				logger.warn("服务{}未注册,请检查服务是否正确!",className);
+				Response response = new Response();
+				response.setRequestId(request.getId());
+				response.setCode(Response.ERROR);
+				response.setErrorMsg("服务未注册,请检查服务是否正确!");
+				response.setData("服务未注册,请检查服务是否正确!");
+				ctx.writeAndFlush(response);
 			}
-			ctx.writeAndFlush(response);
 		}
+	}
+
+	private Response doExecuteMethod(Request request,Object service){
+		Response response = new Response();
+		response.setRequestId(request.getId());
+		String methodName = request.getMethodName();
+		Class<?>[] parameterTypes = request.getParameterTypes();
+		Object[] parameters = request.getParameters();
+		Method method = null ;
+		try {
+			method = service.getClass().getDeclaredMethod(methodName, parameterTypes);
+			method.setAccessible(true);
+			Object retObj = method.invoke(service, parameters);
+			response.setData(retObj);
+		}catch (NoSuchMethodException e){
+			logger.error("方法"+methodName+"不存在,请检查!",e);
+			response.setCode(Response.ERROR);
+			response.setErrorMsg("方法"+methodName+"不存在,请检查!");
+		} catch (IllegalAccessException e) {
+			response.setCode(Response.ERROR);
+			response.setErrorMsg("方法"+methodName+"为非公有方法无法调用!");
+		} catch (InvocationTargetException e) {
+			response.setCode(Response.ERROR);
+			response.setErrorMsg("方法"+methodName+"执行出错!"+e.getMessage());
+		}
+		return response ;
 	}
 
 	@Override
@@ -62,7 +106,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-		logger.info(cause.getMessage());
+		logger.error("====> 服务端发生异常", cause);
 		ctx.close();
 	}
 

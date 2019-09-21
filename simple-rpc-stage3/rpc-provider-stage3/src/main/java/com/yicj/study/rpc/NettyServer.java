@@ -19,6 +19,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -34,6 +35,7 @@ public class NettyServer  implements ApplicationContextAware , InitializingBean 
 	private Map<String, Object> serviceMap = new HashMap<>();
 	@Value("${rpc.server.address}")
 	private String serverAddress;
+
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -69,11 +71,9 @@ public class NettyServer  implements ApplicationContextAware , InitializingBean 
 				protected void initChannel(SocketChannel channel) throws Exception {
 					ChannelPipeline pipeline = channel.pipeline();
 					pipeline.addLast(new IdleStateHandler(0, 0, 20));
-					//pipeline.addLast(new JSONEncoder());
-					//pipeline.addLast(new JSONDecoder());
 					pipeline.addLast(MarshallingCodeCFactory.buildMarshallingEncoder()) ;
 					pipeline.addLast(MarshallingCodeCFactory.buildMarshallingDecoder()) ;
-					pipeline.addLast(new NettyServerHandler());
+					pipeline.addLast(new NettyServerHandler(serviceMap));
 				}
 			});
 			ChannelFuture cf = boot.bind(port).sync();

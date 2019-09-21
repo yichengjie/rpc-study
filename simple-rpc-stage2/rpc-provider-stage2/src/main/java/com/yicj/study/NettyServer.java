@@ -52,7 +52,7 @@ public class NettyServer {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		int port = 8080 ;
+		int port = 18868 ;
 		new NettyServer().start(port); ;
 	}
 

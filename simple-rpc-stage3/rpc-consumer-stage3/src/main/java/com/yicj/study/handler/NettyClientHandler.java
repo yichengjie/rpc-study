@@ -1,5 +1,7 @@
 package com.yicj.study.handler;
 
+import com.yicj.study.service.IUserService;
+import com.yicj.study.vo.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.yicj.study.util.IdUtil;
@@ -20,8 +22,16 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         logger.info("已连接到RPC服务器.{}",ctx.channel().remoteAddress());
         Request req = new Request() ;
         req.setId(IdUtil.getId());
-        req.setMethodName("heartBeat"); 
+        User user = new User("1001","yicj","beijing") ;
+        req.setClassName(IUserService.class.getName());
+        req.setMethodName("insertUser");
+        req.setParameterTypes(new Class<?>[]{User.class});
+        req.setParameters(new Object[]{user});
         ctx.channel().writeAndFlush(req) ;
+//        Request req = new Request() ;
+//        req.setId(IdUtil.getId());
+//        req.setMethodName("heartBeat");
+//        ctx.channel().writeAndFlush(req) ;
     }
 
     public void channelRead(ChannelHandlerContext ctx, Object msg)throws Exception {
