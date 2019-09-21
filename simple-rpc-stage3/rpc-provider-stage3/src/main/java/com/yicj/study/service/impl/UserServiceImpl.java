@@ -5,11 +5,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.yicj.study.annotation.RpcServcie;
 import com.yicj.study.service.IUserService;
 import com.yicj.study.vo.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@RpcServcie
+@Component
 public class UserServiceImpl implements IUserService {
 
 	private Map<String, User> userMap = new ConcurrentHashMap<>();

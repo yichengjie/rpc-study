@@ -1,5 +1,7 @@
 package com.yicj.study.rpc;
 
+import com.yicj.study.annotation.RpcServcie;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.yicj.study.handler.NettyServerHandler;
@@ -15,11 +17,44 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
-public class NettyServer {
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+@Component
+public class NettyServer  implements ApplicationContextAware , InitializingBean {
 	private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
-	
-	//private static final EventLoopGroup workerGroup = new NioEventLoopGroup(4);
+	@Getter
+	private Map<String, Object> serviceMap = new HashMap<>();
+	@Value("${rpc.server.address}")
+	private String serverAddress;
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		Map<String, Object> beans = applicationContext.getBeansWithAnnotation(RpcServcie.class) ;
+		Collection<Object> values = beans.values();
+		for(Object object : values){
+			Class<?>[] interfaces = object.getClass().getInterfaces();
+			for(Class<?> inter : interfaces){
+				String interName = inter.getName();
+				serviceMap.put(interName,object) ;
+			}
+		}
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		String [] infos = serverAddress.split(":");
+		Integer port = Integer.parseInt(infos[1]) ;
+		start(port);
+	}
+
 	public void start(int port) {
 		EventLoopGroup group = new NioEventLoopGroup();
 		try {
@@ -46,14 +81,9 @@ public class NettyServer {
 			// 等待服务端监听端口关闭
 			cf.channel().closeFuture().sync();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("启动netty服务器出错:",e);
 			group.shutdownGracefully();
 		}
 	}
 	
-	public static void main(String[] args) throws Exception {
-		int port = 8080 ;
-		new NettyServer().start(port); ;
-	}
-
 }
