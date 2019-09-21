@@ -14,12 +14,16 @@
 			<groupId>com.yicj.study</groupId>
 			<artifactId>rpc-common-stage3</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<exclusions>
+			<!-- <exclusions>
 				<exclusion>
 					<groupId>ch.qos.logback</groupId>
 					<artifactId>logback-classic</artifactId>
 				</exclusion>
-			</exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>jul-to-slf4j</artifactId>
+				</exclusion>
+			</exclusions> -->
 		</dependency>
 	</dependencies>
 </project>
