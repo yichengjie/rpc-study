@@ -8,8 +8,13 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <packaging>pom</packaging>
     <artifactId>simple-rpc-stage3</artifactId>
 
+    <modules>
+        <module>rpc-common-stage3</module>
+        <module>rpc-consumer-stage3</module>
+        <module>rpc-provider-stage3</module>
+    </modules>
 
 </project>

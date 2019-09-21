@@ -18,7 +18,8 @@
 		<module>api-practice</module>
 		<module>simple-rpc-stage1</module>
 		<module>simple-rpc-stage2</module>
-	</modules>
+        <module>simple-rpc-stage3</module>
+    </modules>
 	
 	<dependencies>
 		<dependency>

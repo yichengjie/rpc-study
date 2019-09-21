@@ -8,8 +8,8 @@
   <artifactId>simple-rpc-stage2</artifactId>
   <packaging>pom</packaging>
   <modules>
-  	<module>simple-modify-common</module>
-  	<module>simple-modify-consumer</module>
-  	<module>simple-modify-provider</module>
+  	<module>rpc-common-stage2</module>
+  	<module>rpc-consumer-stage2</module>
+  	<module>rpc-provider-stage2</module>
   </modules>
 </project>
