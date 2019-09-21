@@ -7,23 +7,22 @@ import io.netty.channel.Channel;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SynchronousQueue;
 
 @Component
-public class ConnectManage implements InitializingBean {
+public class ConnectManage {
     @Autowired
     private NettyClient nettyClient ;
     @Autowired
     private NettyClientHandler nettyClientHandler ;
     private Map<String, Channel> channelNodes = new ConcurrentHashMap<>();
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.init();
-    }
 
+    @PostConstruct
     private void init(){
         String host = "127.0.0.1" ;
         int port = 18868 ;
