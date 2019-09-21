@@ -2,6 +2,7 @@ package com.yicj.study.handler;
 
 import com.yicj.study.service.IUserService;
 import com.yicj.study.vo.User;
+import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.yicj.study.util.IdUtil;
@@ -12,11 +13,17 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import org.springframework.stereotype.Component;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.SynchronousQueue;
 
 
-//@Sharable
+@Sharable
+@Component
 public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private ConcurrentHashMap<String, SynchronousQueue<Response>> queueMap = new ConcurrentHashMap<>();
 
     public void channelActive(ChannelHandlerContext ctx)   {
         logger.info("已连接到RPC服务器.{}",ctx.channel().remoteAddress());
@@ -28,15 +35,17 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         req.setParameterTypes(new Class<?>[]{User.class});
         req.setParameters(new Object[]{user});
         ctx.channel().writeAndFlush(req) ;
-//        Request req = new Request() ;
-//        req.setId(IdUtil.getId());
-//        req.setMethodName("heartBeat");
-//        ctx.channel().writeAndFlush(req) ;
     }
 
     public void channelRead(ChannelHandlerContext ctx, Object msg)throws Exception {
     	Response resp = (Response) msg ;
         logger.info("client recive from server : " + resp.toString());
+        String requestId = resp.getRequestId();
+        SynchronousQueue<Response> queue = this.queueMap.get(requestId);
+        if(queue!=null){
+            queue.put(resp);
+            this.queueMap.remove(requestId) ;
+        }
     }
     
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause){
@@ -58,6 +67,16 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         	logger.info("应用数据发送....");
             super.userEventTriggered(ctx,evt);
         }
+
+    }
+
+    //发送请求
+    public SynchronousQueue<Response> sendRequest(Request request, Channel channel){
+        String id = request.getId();
+        SynchronousQueue<Response> queue = new SynchronousQueue<>() ;
+        queueMap.put(id,queue) ;
+        channel.writeAndFlush(request) ;
+        return queue ;
     }
     
 }

@@ -11,10 +11,11 @@ import com.yicj.study.service.IUserService;
 import com.yicj.study.vo.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @RpcServcie
-@Component
+@Service
 public class UserServiceImpl implements IUserService {
 
 	private Map<String, User> userMap = new ConcurrentHashMap<>();

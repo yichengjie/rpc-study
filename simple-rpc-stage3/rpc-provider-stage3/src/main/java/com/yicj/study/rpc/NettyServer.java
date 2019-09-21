@@ -70,7 +70,7 @@ public class NettyServer  implements ApplicationContextAware , InitializingBean 
 				// 创建NIOSocketChannel成功后，在进行初始化时，将它的ChannelHandler设置到ChannelPipeline中，用于处理网络IO事件
 				protected void initChannel(SocketChannel channel) throws Exception {
 					ChannelPipeline pipeline = channel.pipeline();
-					pipeline.addLast(new IdleStateHandler(0, 0, 20));
+					//pipeline.addLast(new IdleStateHandler(0, 0, 20));
 					pipeline.addLast(MarshallingCodeCFactory.buildMarshallingEncoder()) ;
 					pipeline.addLast(MarshallingCodeCFactory.buildMarshallingDecoder()) ;
 					pipeline.addLast(new NettyServerHandler(serviceMap));
