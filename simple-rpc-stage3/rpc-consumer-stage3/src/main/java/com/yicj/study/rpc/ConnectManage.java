@@ -4,6 +4,7 @@ import com.yicj.study.handler.NettyClientHandler;
 import com.yicj.study.vo.Request;
 import com.yicj.study.vo.Response;
 import io.netty.channel.Channel;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.Map;
@@ -11,14 +12,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SynchronousQueue;
 
 @Component
-public class ConnectManage {
+public class ConnectManage implements InitializingBean {
     @Autowired
     private NettyClient nettyClient ;
     @Autowired
     private NettyClientHandler nettyClientHandler ;
     private Map<String, Channel> channelNodes = new ConcurrentHashMap<>();
 
-    public void init(){
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.init();
+    }
+
+    private void init(){
         String host = "127.0.0.1" ;
         int port = 18868 ;
         nettyClient.start();
@@ -52,4 +58,6 @@ public class ConnectManage {
             return res ;
         }
     }
+
+
 }

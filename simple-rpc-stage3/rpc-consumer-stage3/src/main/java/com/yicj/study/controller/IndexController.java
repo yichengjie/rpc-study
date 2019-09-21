@@ -23,7 +23,6 @@ public class IndexController {
 
     @GetMapping("/index")
     public String index(){
-        this.connectManage.init();
         return "hello world" ;
     }
 
