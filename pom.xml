@@ -15,12 +15,6 @@
 	
 	<modules>
 		<module>battercake-practice</module>
-		<module>simple-advance-common</module>
-		<module>simple-advance-provider</module>
-		<module>simple-advance-consumer</module>
-		<module>simple-modify-common</module>
-		<module>simple-modify-provider</module>
-		<module>simple-modify-consumer</module>
 		<module>api-practice</module>
 		<module>simple-rpc-stage1</module>
 		<module>simple-rpc-stage2</module>
