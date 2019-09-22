@@ -18,7 +18,7 @@ import org.springframework.core.type.filter.TypeFilter;
 
 public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
 
-    private RpcFactoryBean<?> rpcFactoryBean = new RpcFactoryBean<Object>();
+    //private RpcFactoryBean<?> rpcFactoryBean = new RpcFactoryBean<Object>();
 
     private Class<? extends Annotation> annotationClass;
     public void setAnnotationClass(Class<? extends Annotation> annotationClass) {
@@ -75,14 +75,12 @@ public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
     }
     private void processBeanDefinitions(
             Set<BeanDefinitionHolder> beanDefinitions) {
-
-        GenericBeanDefinition definition;
-
         for (BeanDefinitionHolder holder : beanDefinitions) {
-
+            GenericBeanDefinition definition;
             definition = (GenericBeanDefinition) holder.getBeanDefinition();
-            definition.getConstructorArgumentValues().addGenericArgumentValue(definition.getBeanClassName());
-            definition.setBeanClass(this.rpcFactoryBean.getClass());
+            definition.getConstructorArgumentValues().addGenericArgumentValue(
+                    definition.getBeanClassName());
+            definition.setBeanClass(RpcFactoryBean.class);
 
             definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
             System.out.println(holder);
