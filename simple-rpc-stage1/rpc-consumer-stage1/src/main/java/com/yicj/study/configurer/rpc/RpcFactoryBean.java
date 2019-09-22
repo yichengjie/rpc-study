@@ -5,10 +5,10 @@ import java.lang.reflect.Proxy;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class RpcFactoryBean<T> implements FactoryBean<T> {
+public class RpcFactoryBean<T> implements FactoryBean {
     private Class<T> rpcInterface;
     @Autowired
-    private RpcFactory<T> factory;
+    private RpcFactory factory;
 
     public RpcFactoryBean() {}
 

@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class RpcFactory<T> implements InvocationHandler {
+public class RpcFactory implements InvocationHandler {
 
     @Autowired
     private NettyClient client;

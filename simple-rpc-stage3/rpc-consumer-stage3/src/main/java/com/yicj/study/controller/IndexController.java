@@ -1,6 +1,7 @@
 package com.yicj.study.controller;
 
 import com.yicj.study.rpc.ConnectManage;
+import com.yicj.study.rpc.RpcFactory;
 import com.yicj.study.service.IUserService;
 import com.yicj.study.util.IdUtil;
 import com.yicj.study.vo.Request;
@@ -16,10 +17,8 @@ import java.util.List;
 @RestController
 @Slf4j
 public class IndexController {
-
     @Autowired
-    private ConnectManage connectManage ;
-
+    private RpcFactory rpcFactory ;
 
     @GetMapping("/index")
     public String index(){
@@ -28,18 +27,12 @@ public class IndexController {
 
     @GetMapping("/insertUser")
     public List<User> insertUser() throws InterruptedException {
-        Request req = new Request() ;
-        req.setId(IdUtil.getId());
-        User user = new User(IdUtil.getId(),"yicj2","beijing2") ;
-        req.setClassName(IUserService.class.getName());
-        req.setMethodName("insertUser");
-        req.setParameterTypes(new Class<?>[]{User.class});
-        req.setParameters(new Object[]{user});
-        Response response = connectManage.sendRequest(req);
-        log.info("=====> " + response.toString());
-        if(Response.SUCCESS.equals(response.getCode())){
-            return (List<User>)response.getData() ;
-        }
-        return null ;
+        IUserService userService = rpcFactory.getServiceImpl(IUserService.class) ;
+        String id = IdUtil.getId() ;
+        String name = "yicj" ;
+        String address = "henan" ;
+        User user = new User(id,name,address) ;
+        List<User> users = userService.insertUser(user);
+        return users ;
     }
 }

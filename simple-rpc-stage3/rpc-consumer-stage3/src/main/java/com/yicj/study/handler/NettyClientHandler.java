@@ -27,14 +27,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     public void channelActive(ChannelHandlerContext ctx)   {
         logger.info("已连接到RPC服务器.{}",ctx.channel().remoteAddress());
-        Request req = new Request() ;
-        req.setId(IdUtil.getId());
-        User user = new User("1001","yicj","beijing") ;
-        req.setClassName(IUserService.class.getName());
-        req.setMethodName("insertUser");
-        req.setParameterTypes(new Class<?>[]{User.class});
-        req.setParameters(new Object[]{user});
-        ctx.channel().writeAndFlush(req) ;
+        ctx.fireChannelActive() ;
     }
 
     public void channelRead(ChannelHandlerContext ctx, Object msg)throws Exception {
@@ -46,6 +39,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
             queue.put(resp);
             this.queueMap.remove(requestId) ;
         }
+        ctx.fireChannelRead(msg) ;
     }
     
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause){
@@ -59,8 +53,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         	logger.info("准备发送心跳数据.....");
             IdleStateEvent event = (IdleStateEvent)evt;
             if (event.state()== IdleState.ALL_IDLE){
-                Request request = new Request();
-                request.setMethodName("heartBeat");
+                Request request = Request.getHeartBeatRequest() ;
                 ctx.channel().writeAndFlush(request);
             }
         }else{
