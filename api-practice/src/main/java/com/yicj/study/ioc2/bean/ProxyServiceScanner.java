@@ -41,10 +41,10 @@ public class ProxyServiceScanner extends ClassPathBeanDefinitionScanner {
         }else {//扫面路径下的全部文件
             super.addIncludeFilter( (metadataReader,metadataReaderFactory) -> true);
         }
-        super.addExcludeFilter( (metadataReader,metadataReaderFactory)->{
-            String className = metadataReader.getClassMetadata().getClassName();
-            return className.endsWith("package-info");
-        });
+//        super.addExcludeFilter( (metadataReader,metadataReaderFactory)->{
+//            String className = metadataReader.getClassMetadata().getClassName();
+//            return className.endsWith("package-info");
+//        });
     }
 
     private void processBeanDefinitions(Set<BeanDefinitionHolder> definitionHolders) {

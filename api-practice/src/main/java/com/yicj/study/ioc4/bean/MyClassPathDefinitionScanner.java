@@ -34,6 +34,11 @@ public class MyClassPathDefinitionScanner extends ClassPathBeanDefinitionScanner
      * 注册 过滤器
      */
     public void registerTypeFilter(){
-        addIncludeFilter(new AnnotationTypeFilter(type));
+        //addIncludeFilter(new AnnotationTypeFilter(type));
+        if(this.type != null){//如果存在注解，则仅扫面带注解的类
+            addIncludeFilter(new AnnotationTypeFilter(this.type));
+        }else {//扫面路径下的全部文件
+            super.addIncludeFilter( (metadataReader,metadataReaderFactory) -> true);
+        }
     }
 }

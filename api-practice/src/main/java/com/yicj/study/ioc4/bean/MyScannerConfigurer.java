@@ -13,7 +13,7 @@ public class MyScannerConfigurer implements BeanDefinitionRegistryPostProcessor 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         String basePackage = "com.yicj.study.ioc4.service";
-        MyClassPathDefinitionScanner scanner = new MyClassPathDefinitionScanner(registry, MyBean.class) ;
+        MyClassPathDefinitionScanner scanner = new MyClassPathDefinitionScanner(registry, null) ;
         scanner.registerTypeFilter();
         int beanCount = scanner.scan(basePackage);
         String[] beanDefinitionNames = registry.getBeanDefinitionNames();
