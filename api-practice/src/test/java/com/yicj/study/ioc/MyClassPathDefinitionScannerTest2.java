@@ -1,22 +1,15 @@
 package com.yicj.study.ioc;
 
-import com.yicj.study.ApiPracticeApplication;
-import com.yicj.study.ioc.vo.Person;
-import com.yicj.study.ioc2.service.IUserService;
-import com.yicj.study.ioc2.vo.User;
+import com.yicj.study.ioc2.Ioc2Application;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ApiPracticeApplication.class)
+@SpringBootTest(classes = Ioc2Application.class)
 public class MyClassPathDefinitionScannerTest2 {
     //@Autowired
     //private IUserService userService ;

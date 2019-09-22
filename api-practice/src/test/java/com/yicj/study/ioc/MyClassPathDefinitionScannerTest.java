@@ -1,17 +1,14 @@
 package com.yicj.study.ioc;
 
-import com.yicj.study.ApiPracticeApplication;
 import com.yicj.study.ioc.vo.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringRunner.class)
 //@SpringBootTest(classes = ApiPracticeApplication.class)
