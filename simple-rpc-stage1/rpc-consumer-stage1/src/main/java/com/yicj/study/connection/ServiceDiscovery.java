@@ -12,17 +12,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ServiceDiscovery {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Value("${registry.address}")
     private String registryAddress;
     @Autowired
     private ConnectManage connectManage;
-
     // 服务地址列表
     private volatile List<String> addressList = new ArrayList<>();
     private static final String ZK_REGISTRY_PATH = "/rpc";
     private ZkClient client;
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     @PostConstruct
     public void init(){

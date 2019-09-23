@@ -22,6 +22,7 @@ public class ConnectManage {
     private Map<String, Channel> channelNodes = new ConcurrentHashMap<>();
 
 
+
     @PostConstruct
     private void init(){
         String host = "127.0.0.1" ;

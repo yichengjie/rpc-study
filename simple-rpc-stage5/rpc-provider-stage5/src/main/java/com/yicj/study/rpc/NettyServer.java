@@ -35,7 +35,8 @@ public class NettyServer  implements ApplicationContextAware , InitializingBean 
 	private Map<String, Object> serviceMap = new HashMap<>();
 	@Value("${rpc.server.address}")
 	private String serverAddress;
-
+	@Autowired
+	private ZkRegistry zkRegistry ;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -46,6 +47,7 @@ public class NettyServer  implements ApplicationContextAware , InitializingBean 
 			for(Class<?> inter : interfaces){
 				String interName = inter.getName();
 				serviceMap.put(interName,object) ;
+				zkRegistry.createNode(interName);
 			}
 		}
 	}
