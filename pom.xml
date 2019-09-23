@@ -20,6 +20,7 @@
 		<module>simple-rpc-stage2</module>
         <module>simple-rpc-stage3</module>
 		<module>simple-rpc-stage4</module>
+		<module>simple-rpc-stage5</module>
     </modules>
 	
 	<dependencies>
