@@ -1,11 +1,7 @@
 package com.yicj.study.controller;
 
-import com.yicj.study.rpc.ConnectManage;
-import com.yicj.study.rpc.RpcFactory;
 import com.yicj.study.service.IUserService;
 import com.yicj.study.util.IdUtil;
-import com.yicj.study.vo.Request;
-import com.yicj.study.vo.Response;
 import com.yicj.study.vo.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +14,7 @@ import java.util.List;
 @Slf4j
 public class IndexController {
     @Autowired
-    private RpcFactory rpcFactory ;
+    private IUserService userService ;
 
     @GetMapping("/index")
     public String index(){
@@ -27,7 +23,7 @@ public class IndexController {
 
     @GetMapping("/insertUser")
     public List<User> insertUser() throws InterruptedException {
-        IUserService userService = rpcFactory.getServiceImpl(IUserService.class) ;
+
         String id = IdUtil.getId() ;
         String name = "yicj" ;
         String address = "henan" ;

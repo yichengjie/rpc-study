@@ -30,6 +30,9 @@ public class RpcFactoryBean<T> implements FactoryBean {
 
     @SuppressWarnings("unchecked")
 	public T getRpc() {
-        return (T) Proxy.newProxyInstance(rpcInterface.getClassLoader(), new Class[] { rpcInterface },factory);
+        return (T) Proxy.newProxyInstance(
+                rpcInterface.getClassLoader(),
+                new Class[] { rpcInterface },
+                factory);
     }
 }
