@@ -1,14 +1,14 @@
-package com.yicj.study.ioc4;
+package com.yicj.study.ioc5;
 
-import com.yicj.study.ioc4.service.ICalculateService;
-import com.yicj.study.ioc4.service.IUserService;
+import com.yicj.study.ioc5.service.ICalculateService;
+import com.yicj.study.ioc5.service.IUserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Ioc4Application.class)
+@SpringBootTest(classes = Ioc5Application.class)
 public class MyClassPathDefinitionScannerTest {
     @Autowired
     private IUserService userService ;

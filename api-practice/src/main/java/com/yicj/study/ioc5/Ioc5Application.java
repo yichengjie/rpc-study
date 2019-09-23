@@ -1,11 +1,11 @@
-package com.yicj.study.ioc4;
+package com.yicj.study.ioc5;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Ioc4Application {
+public class Ioc5Application {
     public static void main(String[] args) {
-        SpringApplication.run(Ioc4Application.class,args) ;
+        SpringApplication.run(Ioc5Application.class,args) ;
     }
 }

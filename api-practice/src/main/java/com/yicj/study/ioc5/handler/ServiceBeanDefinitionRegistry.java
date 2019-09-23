@@ -1,4 +1,4 @@
-package com.yicj.study.ioc4.handler;
+package com.yicj.study.ioc5.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPost
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         //这里一般我们是通过反射获取需要代理的接口的clazz列表
         //比如判断包下面的类，或者通过某注解标注的类等等
-        Set<Class<?>> beanClazzs = scannerPackages("com.yicj.study.ioc4.service");
+        Set<Class<?>> beanClazzs = scannerPackages("com.yicj.study.ioc5.service");
         for (Class beanClazz : beanClazzs) {
             BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(beanClazz);
             GenericBeanDefinition definition = (GenericBeanDefinition) builder.getRawBeanDefinition();
