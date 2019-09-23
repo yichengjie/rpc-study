@@ -1,5 +1,5 @@
 package com.yicj.study.ioc4.service;
 
 public interface IUserService {
-    void hello(String name) ;
+    String hello(String name, String addr) ;
 }

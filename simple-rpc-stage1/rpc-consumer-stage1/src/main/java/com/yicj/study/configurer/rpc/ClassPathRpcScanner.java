@@ -31,7 +31,9 @@ public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
 
     public Set<BeanDefinitionHolder> doScan(String... basePackages) {
         Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
-
+        System.out.println("============================================");
+        System.out.println("beanDefinitions count : " + beanDefinitions.size());
+        System.out.println("============================================");
         if (beanDefinitions.isEmpty()) {
             logger.warn("No RPC mapper was found in '"
                     + Arrays.toString(basePackages)
@@ -44,46 +46,29 @@ public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
     }
 
     public void registerFilters() {
-        boolean acceptAllInterfaces = true;
-
         if (this.annotationClass != null) {
             addIncludeFilter(new AnnotationTypeFilter(this.annotationClass));
-            acceptAllInterfaces = false;
+        }else{
+            addIncludeFilter((metadataReader, metadataReaderFactory) -> true);
         }
-
-        if (acceptAllInterfaces) {
-            addIncludeFilter(new TypeFilter() {
-                @Override
-                public boolean match(MetadataReader metadataReader,
-                                     MetadataReaderFactory metadataReaderFactory) {
-                    return true;
-                }
-            });
-        }
-
         // exclude package-info.java
-        addExcludeFilter(new TypeFilter() {
-            @Override
-            public boolean match(MetadataReader metadataReader,
-                                 MetadataReaderFactory metadataReaderFactory)
-                    throws IOException {
-                String className = metadataReader.getClassMetadata()
-                        .getClassName();
-                return className.endsWith("package-info");
-            }
+        addExcludeFilter((metadataReader, metadataReaderFactory) -> {
+            String className = metadataReader.getClassMetadata().getClassName();
+            return className.endsWith("package-info");
         });
     }
+
     private void processBeanDefinitions(
             Set<BeanDefinitionHolder> beanDefinitions) {
         for (BeanDefinitionHolder holder : beanDefinitions) {
+
             GenericBeanDefinition definition;
             definition = (GenericBeanDefinition) holder.getBeanDefinition();
             definition.getConstructorArgumentValues().addGenericArgumentValue(
                     definition.getBeanClassName());
+            System.out.println("===================> " + definition.getBeanClassName());
             definition.setBeanClass(RpcFactoryBean.class);
-
             definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
-            System.out.println(holder);
         }
     }
 

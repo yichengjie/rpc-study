@@ -1,0 +1,1 @@
+1.测试BeanDefinitionRegistryPostProcessor，BeanFactoryPostProcessor动态向spring容器中加入实例化的bean
