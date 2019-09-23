@@ -1,5 +1,7 @@
 package com.yicj.study.ioc4.handler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -19,6 +21,7 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
+
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -26,6 +29,7 @@ import java.util.Set;
 //用于Spring动态注入自定义接口
 @Component
 public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPostProcessor, ResourceLoaderAware, ApplicationContextAware {
+    private Logger logger = LoggerFactory.getLogger(ServiceBeanDefinitionRegistry.class);
     private static final String DEFAULT_RESOURCE_PATTERN = "**/*.class";
     private MetadataReaderFactory metadataReaderFactory;
     private ResourcePatternResolver resourcePatternResolver;
@@ -58,33 +62,39 @@ public class ServiceBeanDefinitionRegistry implements BeanDefinitionRegistryPost
     }
 
 
-
     /**
      * 根据包路径获取包及子包下的所有类
      * @param basePackage basePackage
-     * @return Set<Class<?>> Set<Class<?>>
+     * @return Set<Class < ?>> Set<Class<?>>
      */
     private Set<Class<?>> scannerPackages(String basePackage) {
         Set<Class<?>> set = new LinkedHashSet<>();
         String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
                 resolveBasePackage(basePackage) + '/' + DEFAULT_RESOURCE_PATTERN;
+        Resource[] resources ;
         try {
-            Resource[] resources = this.resourcePatternResolver.getResources(packageSearchPath);
-            for (Resource resource : resources) {
-                if (resource.isReadable()) {
-                    MetadataReader metadataReader = this.metadataReaderFactory.getMetadataReader(resource);
-                    String className = metadataReader.getClassMetadata().getClassName();
-                    Class<?> clazz;
-                    try {
-                        clazz = Class.forName(className);
-                        set.add(clazz);
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
+            resources = this.resourcePatternResolver.getResources(packageSearchPath);
+        } catch (IOException e) {
+            logger.error("从[" + packageSearchPath + "]获取资源出错!", e);
+            return set;
+        }
+        for (Resource resource : resources) {
+            if (resource.isReadable()) {
+                MetadataReader metadataReader = null ;
+                try {
+                    metadataReader = this.metadataReaderFactory.getMetadataReader(resource);
+                } catch (IOException e) {
+                    logger.error("获取对应class文件的MetadataReader出错!",e);
+                    continue;
+                }
+                String className = metadataReader.getClassMetadata().getClassName();
+                try {
+                    Class<?> clazz=  Class.forName(className);
+                    set.add(clazz);
+                } catch (ClassNotFoundException e) {
+                    logger.error("加载class文件"+className+"出错",e);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return set;
     }
