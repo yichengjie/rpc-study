@@ -1,5 +1,6 @@
 package com.yicj.study.ioc2.bean;
 
+import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -55,5 +56,11 @@ public class ProxyServiceScanner extends ClassPathBeanDefinitionScanner {
             definition.setBeanClass(ProxyFactoryBean.class);
             definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         }
+    }
+
+    //这个方法一定要重写，默认接口是不会被扫描进来的
+    @Override
+    protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
+        return beanDefinition.getMetadata().isInterface() && beanDefinition.getMetadata().isIndependent();
     }
 }

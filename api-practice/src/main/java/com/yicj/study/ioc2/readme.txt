@@ -1,0 +1,1 @@
+1.从simple-rpc-stage1的rpc-consumer-stage1复制出动态实现接口并放入spring容器中的代码进行测试
