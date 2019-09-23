@@ -19,6 +19,7 @@
 		<module>simple-rpc-stage1</module>
 		<module>simple-rpc-stage2</module>
         <module>simple-rpc-stage3</module>
+		<module>simple-rpc-stage4</module>
     </modules>
 	
 	<dependencies>
