@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.yicj.study.handler.NettyServerHandler;
 import com.yicj.study.netty.codec.MarshallingCodeCFactory;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -16,7 +15,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.timeout.IdleStateHandler;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +34,7 @@ public class NettyServer  implements ApplicationContextAware , InitializingBean 
 	@Value("${rpc.server.address}")
 	private String serverAddress;
 	@Autowired
-	private ZkRegistry zkRegistry ;
+	private ServiceRegistry serviceRegistry ;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -47,7 +45,7 @@ public class NettyServer  implements ApplicationContextAware , InitializingBean 
 			for(Class<?> inter : interfaces){
 				String interName = inter.getName();
 				serviceMap.put(interName,object) ;
-				zkRegistry.createNode(interName);
+				serviceRegistry.createNode();
 			}
 		}
 	}

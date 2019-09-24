@@ -5,7 +5,7 @@ import java.lang.reflect.Proxy;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class RpcFactoryBean<T> implements FactoryBean {
+public class RpcFactoryBean<T> implements FactoryBean<T> {
     private Class<T> rpcInterface;
     @Autowired
     private RpcFactory factory;
