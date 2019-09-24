@@ -6,3 +6,4 @@
 
       User user = new User(id,name,address) ;
       List<User> users = userService.insertUser(user);
+3.使用zookeeper作为注册中心注册服务
