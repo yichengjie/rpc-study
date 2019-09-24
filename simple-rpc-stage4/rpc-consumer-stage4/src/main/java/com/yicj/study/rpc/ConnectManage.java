@@ -4,10 +4,8 @@ import com.yicj.study.handler.NettyClientHandler;
 import com.yicj.study.vo.Request;
 import com.yicj.study.vo.Response;
 import io.netty.channel.Channel;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

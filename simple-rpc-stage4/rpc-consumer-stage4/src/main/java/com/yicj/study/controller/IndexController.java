@@ -3,7 +3,6 @@ package com.yicj.study.controller;
 import com.yicj.study.service.IUserService;
 import com.yicj.study.util.IdUtil;
 import com.yicj.study.vo.User;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@Slf4j
 public class IndexController {
     @Autowired
     private IUserService userService ;

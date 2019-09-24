@@ -1,11 +1,8 @@
 package com.yicj.study.handler;
 
-import com.yicj.study.service.IUserService;
-import com.yicj.study.vo.User;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.yicj.study.util.IdUtil;
 import com.yicj.study.vo.Request;
 import com.yicj.study.vo.Response;
 import io.netty.channel.ChannelHandlerContext;

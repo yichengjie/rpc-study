@@ -27,20 +27,15 @@
 		</dependency>
 		<!-- zeekeeper注册中心 -->
 		<dependency>
-			<groupId>org.apache.zookeeper</groupId>
-			<artifactId>zookeeper</artifactId>
-			<version>3.4.13</version>
+			<groupId>com.101tec</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>0.10</version>
 			<exclusions>
 				<exclusion>
 					<groupId>io.netty</groupId>
 					<artifactId>netty</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.101tec</groupId>
-			<artifactId>zkclient</artifactId>
-			<version>0.10</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
