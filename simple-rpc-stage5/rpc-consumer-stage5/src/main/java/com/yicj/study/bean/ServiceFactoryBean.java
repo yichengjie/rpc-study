@@ -3,16 +3,15 @@ package com.yicj.study.bean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
 //接口实例工厂，这里主要是用于提供接口的实例对象
-public class ServiceBeanFactory<T> implements FactoryBean<T> {
+public class ServiceFactoryBean<T> implements FactoryBean<T> {
 
     @Autowired
-    private ServiceProxy serviceProxy ;
+    private ServiceInvocationHandler serviceInvocationHandler ;
     private Class<T> interfaceType;
-    public ServiceBeanFactory(Class<T> interfaceType) {
+    public ServiceFactoryBean(Class<T> interfaceType) {
         this.interfaceType = interfaceType;
     }
 
@@ -23,7 +22,7 @@ public class ServiceBeanFactory<T> implements FactoryBean<T> {
         return (T) Proxy.newProxyInstance(
                 interfaceType.getClassLoader(),
                 new Class[]{interfaceType},
-                serviceProxy);
+                serviceInvocationHandler);
     }
 
     @Override

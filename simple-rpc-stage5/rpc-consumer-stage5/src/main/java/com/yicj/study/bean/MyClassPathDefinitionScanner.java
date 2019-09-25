@@ -33,7 +33,7 @@ public class MyClassPathDefinitionScanner extends ClassPathBeanDefinitionScanner
         for (BeanDefinitionHolder holder : definitionHolders){
             GenericBeanDefinition definition = (GenericBeanDefinition) holder.getBeanDefinition();
             definition.getConstructorArgumentValues().addGenericArgumentValue(definition.getBeanClassName());
-            definition.setBeanClass(ServiceBeanFactory.class);
+            definition.setBeanClass(ServiceFactoryBean.class);
             definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         }
     }
