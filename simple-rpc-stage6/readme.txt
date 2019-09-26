@@ -1,4 +1,5 @@
 1.使用netty结合jboos序列化与服务端通信
+
 2.使用代理类生成clien实现类并放入spring容器
   2.1 使用示例:
       @Autowired
@@ -6,5 +7,7 @@
 
       User user = new User(id,name,address) ;
       List<User> users = userService.insertUser(user);
+      
 3.使用zookeeper作为注册中心注册服务
-4.客户端补充异步调用接口
+
+4.客户端支持异步接口调用

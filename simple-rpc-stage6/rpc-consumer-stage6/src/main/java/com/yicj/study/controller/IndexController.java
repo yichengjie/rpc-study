@@ -2,7 +2,6 @@ package com.yicj.study.controller;
 
 import com.yicj.study.service.client.IUserService;
 import com.yicj.study.util.IdUtil;
-import com.yicj.study.vo.Response;
 import com.yicj.study.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,9 +35,8 @@ public class IndexController {
         String name = "yicj-async" ;
         String address = "henan-async" ;
         User user = new User(id,name,address) ;
-        Future<Response> future = userService.insertUserAsync(user);
-        Response response = future.get();
-        List<User> users = (List<User>)response.getData() ;
+        Future<List<User>> future = userService.insertUserAsync(user);
+        List<User> users = future.get();
         return users ;
     }
 }

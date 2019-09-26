@@ -8,7 +8,7 @@ import com.yicj.study.vo.User;
 
 public interface IUserService {
 	List<User> insertUser(User user);
-	Future<Response> insertUserAsync(User infoUser);
+	Future<List<User>> insertUserAsync(User infoUser);
 	///////////////////////////////////////////
     User getUserById(String id);
     Future<Response> getUserByIdAsync(String id);

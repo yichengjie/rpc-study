@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -53,16 +52,19 @@ public class ConnectManage {
         }
     }
     
-    public Future<Response> sendRequestAsync(Request request) {
+    public Future<?> sendRequestAsync(Request request) {
     	Channel channel = this.chooseChannel();
         if (channel != null && channel.isActive()) {
         	SynchronousQueue<Response> queue = nettyClientHandler.sendRequest(request, channel);
-        	return asyncExecutorService.submit(() -> queue.take()) ;
+        	return asyncExecutorService.submit(() ->{
+        		Response resp = queue.take();
+        		return resp.getData() ;
+        	} ) ;
         } else {
         	Response res = new Response();
             res.setCode(Response.ERROR);
             res.setErrorMsg("未正确连接到服务器.请检查相关配置信息!");
-        	return asyncExecutorService.submit(() -> res) ;
+        	return asyncExecutorService.submit(() -> null) ;
         }
 	}
     
