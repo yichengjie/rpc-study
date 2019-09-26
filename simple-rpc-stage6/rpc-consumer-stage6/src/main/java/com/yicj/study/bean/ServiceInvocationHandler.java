@@ -6,7 +6,6 @@ import com.yicj.study.vo.Request;
 import com.yicj.study.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
@@ -22,10 +21,21 @@ public class ServiceInvocationHandler implements InvocationHandler {
         String id = IdUtil.getId() ;
         String className = interfaces[0].getName() ;
         String methodName = method.getName() ;
+        className = className.replace("service.client", "service");
+        //如果是异步接口调用，则返回Feature
         Class<?> [] parameterTypes = method.getParameterTypes() ;
         Object [] parameters = args ;
-        Request request = new Request(id,className,methodName,parameterTypes,parameters) ;
-        Response response = connectManage.sendRequest(request);
-        return response.getData();
+        boolean asyncFlag = false;
+        if(methodName.endsWith("Async")) {
+           methodName = methodName.substring(0, methodName.length() -5) ;
+           asyncFlag = true ;
+        }
+    	Request request = new Request(id,className,methodName,parameterTypes,parameters) ;
+    	if(asyncFlag) {
+    		return connectManage.sendRequestAsync(request);
+    	}else {
+    		Response response = connectManage.sendRequest(request);
+        	return response.getData();
+    	}
     }
 }

@@ -2,8 +2,9 @@ package com.yicj.study.netty.client;
 
 import java.net.SocketAddress;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +40,13 @@ public class NettyClient {
 	private NettyClientHandler clientHandler;
 	@Autowired
 	private ConnectManage connectManage;
+	private ExecutorService executorService = Executors.newFixedThreadPool(10);
+	
+	
+	@PreDestroy
+	private void destory() {
+		executorService.shutdown(); 
+	}
 
 	public NettyClient() {
 		bootstrap.group(group)
@@ -81,20 +89,18 @@ public class NettyClient {
 	
 	
 	public Future<Response> sendAsync(Request request) throws InterruptedException {
-		Future<Response> future = null ; 
 		Channel channel = connectManage.chooseChannel();
 		if (channel != null && channel.isActive()) {
 			SynchronousQueue<Response> queue = clientHandler.sendRequest(request, channel);
-			future = new FutureTask<Response>(new Callable<Response>() {
+			return executorService.submit(new Callable<Response>() {
 				@Override
 				public Response call() throws Exception {
 					Response result = queue.take();
 					return result;
 				}
 			}) ;
-			return future ;
 		} else {
-			future = new FutureTask<Response>(new Callable<Response>() {
+			return executorService.submit(new Callable<Response>() {
 				@Override
 				public Response call() throws Exception {
 					Response res = new Response();
@@ -103,7 +109,6 @@ public class NettyClient {
 					return res;
 				}
 			}) ;
-			return future ;
 		}
 	}
 

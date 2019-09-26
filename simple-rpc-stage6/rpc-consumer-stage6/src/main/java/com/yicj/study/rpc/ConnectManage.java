@@ -14,7 +14,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -27,6 +31,8 @@ public class ConnectManage {
     private NettyClientHandler nettyClientHandler ;
     private Map<String, Channel> channelNodes = new ConcurrentHashMap<String, Channel>();
     private AtomicInteger roundRobin = new AtomicInteger(0);
+    //异步执行线程池
+    private ExecutorService asyncExecutorService = Executors.newFixedThreadPool(10);
 
     @PostConstruct
     private void init(){
@@ -46,6 +52,19 @@ public class ConnectManage {
             return res ;
         }
     }
+    
+    public Future<Response> sendRequestAsync(Request request) {
+    	Channel channel = this.chooseChannel();
+        if (channel != null && channel.isActive()) {
+        	SynchronousQueue<Response> queue = nettyClientHandler.sendRequest(request, channel);
+        	return asyncExecutorService.submit(() -> queue.take()) ;
+        } else {
+        	Response res = new Response();
+            res.setCode(Response.ERROR);
+            res.setErrorMsg("未正确连接到服务器.请检查相关配置信息!");
+        	return asyncExecutorService.submit(() -> res) ;
+        }
+	}
     
     public void updateConnectServer(List<String> addressList) {
 		if(addressList.isEmpty()) {
@@ -116,5 +135,7 @@ public class ConnectManage {
 		}
 		channelNodes.clear();
 	}
+
+	
 
 }

@@ -13,7 +13,7 @@ public class MyScannerConfigurer implements BeanDefinitionRegistryPostProcessor 
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        String basePackage = "com.yicj.study.service";
+        String basePackage = "com.yicj.study.service.client";
         MyClassPathDefinitionScanner scanner = new MyClassPathDefinitionScanner(registry);
         scanner.registerTypeFilter();
         scanner.scan(StringUtils.tokenizeToStringArray(basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
