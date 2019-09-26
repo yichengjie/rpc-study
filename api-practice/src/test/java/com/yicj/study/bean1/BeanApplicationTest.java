@@ -29,6 +29,6 @@ public class BeanApplicationTest {
         String info = helloService.sayHello("yicj");
         System.out.println("info : " + info);
         //Object bean = context.getBean("&fbHelloWorldService");
-        System.out.println("context : " + object.getClass().getName());
+        System.out.println("obj : " + object.getClass().getName());
     }
 }
