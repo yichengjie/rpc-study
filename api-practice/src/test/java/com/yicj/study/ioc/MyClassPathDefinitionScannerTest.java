@@ -1,14 +1,14 @@
 package com.yicj.study.ioc;
 
-import com.yicj.study.ioc.vo.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+
+import com.yicj.study.ioc.vo.Person ;
 
 @RunWith(SpringRunner.class)
 //@SpringBootTest(classes = ApiPracticeApplication.class)
