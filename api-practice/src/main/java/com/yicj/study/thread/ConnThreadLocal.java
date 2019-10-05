@@ -15,6 +15,10 @@ public class ConnThreadLocal {
 	} 
 
 	
+	/**
+	 * t1 : 张三
+     * t2 : null
+	 */
 	public static void main(String[] args) throws InterruptedException {
 		ConnThreadLocal ct = new ConnThreadLocal() ;
 		new Thread(new Runnable() {
