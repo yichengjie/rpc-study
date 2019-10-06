@@ -11,7 +11,21 @@ public class SynchronousQueueTest {
 		//test2无法运行
 		//test2();
 		//test3正常运行
-		test3();
+		//test3();
+		
+		
+		
+		Thread t = new Thread( new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("hello world");
+			}
+		}); 
+		
+		t.start(); 
+		t.start(); 
+		
+		
 	}
 
 	private static void test1() throws InterruptedException {
@@ -24,6 +38,7 @@ public class SynchronousQueueTest {
 	private static void test2() throws InterruptedException {
 		SynchronousQueue<String> queue = new SynchronousQueue<String>();
 		queue.put("hello");//此时当前线程会一直阻塞，无法执行后面的代码
+		//queue.add("hello") // add 会抛出异常IllegalStateException: Queue full
 		String str = queue.take();
 		System.out.println(str);
 		
